@@ -1,3 +1,4 @@
+// This domain will be used to receive the response result from the 'get' last games stats activision endpoint
 package activision
 
 type LastGamesRequest struct {
@@ -5,14 +6,34 @@ type LastGamesRequest struct {
 	Platform string `json:"platform"`
 }
 
-type LastGamesResponse struct {
-	Status   string       `json:"status"`
-	Data     ResponseData `json:"data"`
-	Username string       `json:"username"`
-	Platform string       `json:"platform"`
+// In order to have the ability to make validation and use different request domain objects
+// i made a decision to work with ActivisionRequest interface to have the ability to handle
+// different request domain objects in the same functions to avoid code duplication.
+
+func (r LastGamesRequest) GetUsername() string {
+	return r.Username
 }
 
-type ResponseData struct {
+func (r LastGamesRequest) GetPlatform() string {
+	return r.Platform
+}
+
+func (r LastGamesRequest) GetGameID() string {
+	return ""
+}
+
+func (r LastGamesRequest) GetTarget() string {
+	return "LastGames"
+}
+
+type LastGamesResponse struct {
+	Status   string                `json:"status"`
+	Data     LastGamesResponseData `json:"data"`
+	Username string                `json:"username"`
+	Platform string                `json:"platform"`
+}
+
+type LastGamesResponseData struct {
 	Summary DataSummary `json:"summary"`
 	Matches []Match     `json:"matches"`
 }
