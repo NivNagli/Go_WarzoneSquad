@@ -9,20 +9,20 @@ import (
 )
 
 func main() {
-	// lastGamesReq := activision.LastGamesRequest{Username: "inbargab#6797419", Platform: "uno"}
-	// result, err := activision_providers.GetLastGamesStats(lastGamesReq)
+	lastGamesReq := activision.LastGamesRequest{Username: "inbargab#6797419", Platform: "uno"}
+	result, err := activision_providers.GetLastGamesStatsByCycles(lastGamesReq, 5)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(result.Data.Matches)
+	}
+
+	// lifetimeAndWeekly := activision.LifetimeAndWeeklyRequest{Username: "inbargab#6797419", Platform: "uno"}
+	// result, err := activision_providers.GetLifetimeAndWeeklyStats(lifetimeAndWeekly)
 	// if err != nil {
 	// 	fmt.Println(err)
 	// } else {
 	// 	fmt.Println(result)
 	// }
-
-	lifetimeAndWeekly := activision.LifetimeAndWeeklyRequest{Username: "inbargab#6797419", Platform: "uno"}
-	result, err := activision_providers.GetLifetimeAndWeeklyStats(lifetimeAndWeekly)
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(result)
-	}
 
 }
