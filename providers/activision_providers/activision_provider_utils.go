@@ -14,9 +14,10 @@ import (
 )
 
 const (
-	urlGetLastGameStats       = "https://my.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/%s/gamer/%s/matches/wz/start/0/end/0/details" // wildcard for the last game request url endpoint in the official API
-	urlGetLifetimeAndWeekly   = "https://my.callofduty.com/api/papi-client/stats/cod/v1/title/mw/platform/%s/gamer/%s/profile/type/wz"                // wildcard for the lifetime and weekly request url endpoint in the official API
-	headerAuthorizationFormat = "ACT_SSO_COOKIE=%s; ACT_SSO_COOKIE_EXPIRY=%d; atkn=%s;"                                                               // wildcard for the authorization cookie header
+	urlGetLastGameStats       = "https://my.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/%s/gamer/%s/matches/wz/start/0/end/0/details"  // wildcard for the last game request url endpoint in the official API
+	urlGetLastGameStatsByDate = "https://my.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/%s/gamer/%s/matches/wz/start/0/end/%s/details" // wildcard for the last game request url endpoint in the official API
+	urlGetLifetimeAndWeekly   = "https://my.callofduty.com/api/papi-client/stats/cod/v1/title/mw/platform/%s/gamer/%s/profile/type/wz"                 // wildcard for the lifetime and weekly request url endpoint in the official API
+	headerAuthorizationFormat = "ACT_SSO_COOKIE=%s; ACT_SSO_COOKIE_EXPIRY=%d; atkn=%s;"                                                                // wildcard for the authorization cookie header
 )
 
 /***************************************** Help functions for setting headers *****************************************/
@@ -84,7 +85,7 @@ func FixUsername(r activision.ActivisionRequest) (string, error) {
 // in case of an error we will return empty string and the error, and in case of successful fill we return the fixed url and err==nil.
 func CreateLastGamesStatsUrl(r activision.ActivisionRequest) (string, error) {
 	if len(r.GetUsername()) == 0 || len(r.GetPlatform()) == 0 {
-		return "", &activision.ActivisionErrorResponse{Message: "Error: missing argument for receive for the search\n", StatusCode: 400}
+		return "", &activision.ActivisionErrorResponse{Message: "Error: missing argument for receive for the last games stats search\n", StatusCode: 400}
 	}
 
 	if err := ValidatePlatform(r); err != nil {
@@ -99,11 +100,30 @@ func CreateLastGamesStatsUrl(r activision.ActivisionRequest) (string, error) {
 	return fmt.Sprintf(urlGetLastGameStats, r.GetPlatform(), fixedUsername), nil
 }
 
+// createLastGameStatsUrl will try to fill the urlGetLastGameStats url wildcard with the username and platform that received from the ActivisionRequest.
+// in case of an error we will return empty string and the error, and in case of successful fill we return the fixed url and err==nil.
+func CreateLastGamesStatsByDateUrl(r activision.ActivisionRequest, d string) (string, error) {
+	if len(r.GetUsername()) == 0 || len(r.GetPlatform()) == 0 || len(d) == 0 {
+		return "", &activision.ActivisionErrorResponse{Message: "Error: missing argument for receive for the last games stats by date search\n", StatusCode: 400}
+	}
+
+	if err := ValidatePlatform(r); err != nil {
+		return "", err
+	}
+
+	fixedUsername, err := FixUsername(r)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf(urlGetLastGameStatsByDate, r.GetPlatform(), fixedUsername, d), nil
+}
+
 // CreateLifetimeAndWeeklyUrl will try to fill the urlGetLifetimeAndWeekly url wildcard with the username and platform that received from the ActivisionRequest.
 // in case of an error we will return empty string and the error, and in case of successful fill we return the fixed url and err==nil.
 func CreateLifetimeAndWeeklyUrl(r activision.ActivisionRequest) (string, error) {
 	if len(r.GetUsername()) == 0 || len(r.GetPlatform()) == 0 {
-		return "", &activision.ActivisionErrorResponse{Message: "Error: missing argument for receive for the search\n", StatusCode: 400}
+		return "", &activision.ActivisionErrorResponse{Message: "Error: missing argument for receive for the lifetime and weekly stats search\n", StatusCode: 400}
 	}
 
 	if err := ValidatePlatform(r); err != nil {

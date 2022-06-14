@@ -89,4 +89,5 @@ type PlayerStatsFromMatch struct {
 	PercentTimeMoving float64 `json:"percentTimeMoving"`
 	DamageDone        float64 `json:"damageDone"`
 	DamageTaken       float64 `json:"damageTaken"`
+	TeamPlacement     float64 `json:"teamPlacement"`
 }
