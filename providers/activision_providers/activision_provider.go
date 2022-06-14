@@ -10,6 +10,8 @@ import (
 	"github.com/NivNagli/WarzoneSquad_Go/domain/activision"
 )
 
+/********************************* Functions for getting the last games stats by recent/date/cycles *************************************/
+
 // GetLastGameStats return the response from the last game stats request that sent to the official API.
 // In case of error we will return the ActivisionErrorResponse object that will contain the error status code that we set and a short message within him,
 // the function argument is LastGamesRequest object that will contain the username and platform for the player that we want to get the last game stats for.
@@ -136,9 +138,9 @@ func GetLastGamesStatsByCycles(r activision.LastGamesRequest, c int) (*activisio
 		return nil, err
 	}
 	// Now we create 2 slices which will help us to extract the games past the last 20
-	responsesArray := make([]activision.LastGamesResponse, c)
-	responsesArray[0] = *firstResult
-	matchesArray := make([][]activision.Match, c)
+	responsesArray := make([]activision.LastGamesResponse, c) // This array will hold the responses that comes from 'GetLastGamesStatsByDate'
+	responsesArray[0] = *firstResult                          // In this stage we already have the first response so we insert her
+	matchesArray := make([][]activision.Match, c)             // This array will hold the 'Matches' array field from each response that comes from 'GetLastGamesStatsByDate'
 	matchesArray[0] = firstResult.Data.Matches
 	// In this loop we will use the last recorded game date that we have in order to find the
 	// 20 games that occur after him, and then will save the results in order to use them if we didn't
@@ -166,6 +168,8 @@ func GetLastGamesStatsByCycles(r activision.LastGamesRequest, c int) (*activisio
 	// Result that contain 20*cycles games array.
 	return firstResult, nil
 }
+
+/***************************************** Function for getting the weekly and lifetime stats ********************************/
 
 // Pretty much just like the GetLastGamesStats method, except this time we are pointing to the lifetime and weekly endpoint
 // thus we need to work with different response object and url, except that the logic almost the same...
