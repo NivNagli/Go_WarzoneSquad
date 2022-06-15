@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	urlGetLastGameStats       = "https://my.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/%s/gamer/%s/matches/wz/start/0/end/0/details"  // wildcard for the last game request url endpoint in the official API
-	urlGetLastGameStatsByDate = "https://my.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/%s/gamer/%s/matches/wz/start/0/end/%s/details" // wildcard for the last game request url endpoint in the official API
-	urlGetLifetimeAndWeekly   = "https://my.callofduty.com/api/papi-client/stats/cod/v1/title/mw/platform/%s/gamer/%s/profile/type/wz"                 // wildcard for the lifetime and weekly request url endpoint in the official API
-	headerAuthorizationFormat = "ACT_SSO_COOKIE=%s; ACT_SSO_COOKIE_EXPIRY=%d; atkn=%s;"                                                                // wildcard for the authorization cookie header
+	urlGetLastGameStats         = "https://my.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/%s/gamer/%s/matches/wz/start/0/end/0/details"  // wildcard for the last game request url endpoint in the official API
+	urlGetLastGameStatsByDate   = "https://my.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/%s/gamer/%s/matches/wz/start/0/end/%s/details" // wildcard for the last game request url endpoint in the official API
+	urlGetLifetimeAndWeekly     = "https://my.callofduty.com/api/papi-client/stats/cod/v1/title/mw/platform/%s/gamer/%s/profile/type/wz"                 // wildcard for the lifetime and weekly request url endpoint in the official API
+	urlGetSpecificGameStatsByID = "https://www.callofduty.com/api/papi-client/crm/cod/v2/title/mw/platform/battle/fullMatch/wz/%s/it"                    // wildcard for the get game specific stats by ID request url endpoint in the official API
+	headerAuthorizationFormat   = "ACT_SSO_COOKIE=%s; ACT_SSO_COOKIE_EXPIRY=%d; atkn=%s;"                                                                // wildcard for the authorization cookie header
 )
 
 /***************************************** Help functions for setting headers *****************************************/
@@ -136,4 +137,13 @@ func CreateLifetimeAndWeeklyUrl(r activision.ActivisionRequest) (string, error) 
 	}
 
 	return fmt.Sprintf(urlGetLifetimeAndWeekly, r.GetPlatform(), fixedUsername), nil
+}
+
+/************************************************************************************************/
+
+func CreateGetSpecificGameUrl(r activision.SpecificGameStatsRequest) (string, error) {
+	if len(r.GameID) == 0 {
+		return "", &activision.ActivisionErrorResponse{Message: "Error: missing game ID for 'CreateGetSpecificGameUrl' function.\n", StatusCode: 400}
+	}
+	return fmt.Sprintf(urlGetSpecificGameStatsByID, r.GameID), nil
 }
